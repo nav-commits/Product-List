@@ -1,11 +1,22 @@
+"use client";
 import { Product } from "@/types/data.types";
 import { Card } from "./Card";
+import logo from "@/public/icons/icon-add-to-cart.svg";
+import Image from "next/image";
+import { useState } from "react";
 
 interface ProductData {
   products: Product[];
 }
 
 export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
+  const [counts, setCounts] = useState<{ [key: number]: number }>({});
+  const updateCounter = (index: number) => {
+    setCounts((prev) => ({
+      ...prev,
+      [index]: (prev[index] || 0) + 1,
+    }));
+  };
   return (
     <div className="px-10 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -24,17 +35,24 @@ export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
                 price={item.price}
                 overlayButton
                 button={
-                  <button className="bg-red-800 cursor-pointer text-white px-4 py-2 rounded-full hover:bg-red-800 transition text-sm sm:text-base">
-                    Add to Cart
+                  <button
+                    onClick={() => updateCounter(i)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-bold 
+                               bg-white border border-red-800 rounded-full transition 
+                               cursor-pointer hover:bg-red-50"
+                  >
+                    <Image src={logo} alt="Cart Icon" className="w-5 h-5" />
+                    {counts[i] && counts[i] > 0 ? counts[i] : "Add to Cart"}
                   </button>
                 }
               />
             ))}
           </div>
         </div>
+
         {/* Cart section */}
         <div className="flex flex-col gap-4">
-          <Card title="Your Cart (0)" className="p-4 w-120 bg-white">
+          <Card title={`Your Cart`} className="p-4 w-120 bg-white">
             <div className="h-40 w-80 w-full bg-gray-200 flex items-center justify-center text-gray-500">
               Cart Image
             </div>
