@@ -130,7 +130,7 @@ export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
               (a, b) => a + b,
               0
             )})`}
-            className="p-4 w-120 bg-white"
+            className="p-4 lg:w-120 bg-white"
           >
             {Object.keys(counts).length > 0 ? (
               <div>
