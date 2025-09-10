@@ -15,6 +15,7 @@ interface ProductData {
 
 export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
   const [counts, setCounts] = useState<{ [key: number]: number }>({});
+  const [open, setOpen] = useState(false);
 
   const increaseCounter = (id: number) => {
     setCounts((prev) => ({
@@ -166,7 +167,10 @@ export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
                   Total: ${totalPrice.toFixed(2)}
                 </h3>
 
-                <button className="mt-4 bg-red-800 text-white px-4 py-2 rounded-2xl hover:bg-red-600 cursor-pointer">
+                <button
+                  onClick={() => setOpen(true)}
+                  className="mt-4 bg-red-800 text-white px-4 py-2 rounded-2xl hover:bg-red-600 cursor-pointer"
+                >
                   Confirm Order
                 </button>
               </div>
@@ -177,6 +181,54 @@ export const ProductsContainer: React.FC<ProductData> = ({ products }) => {
               </div>
             )}
           </Card>
+          {open && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setOpen(false)}
+              ></div>
+
+              {/* Modal box */}
+              <div className="relative bg-white rounded-xl shadow-lg p-6 w-100">
+                <h2 className="text-lg font-semibold mb-4">Order Confirmed</h2>
+                {Object.entries(counts).map(([id, count]) => {
+                  const product = products.find((p) => p.id === Number(id));
+                  if (!product) return null;
+                  const itemTotal = product.price * count;
+                  return (
+                    <div
+                      key={id}
+                      className="flex justify-between items-center border-b py-2"
+                    >
+                      <div>
+                        <p className="font-semibold">{product.name}</p>
+                        <p className="text-sm text-gray-500">
+                          {count} × ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <p className="font-bold">${itemTotal.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+                <div className="flex justify-between ">
+                  <h3>Order total</h3>
+                  <h3 className="font-bold text-lg">
+                    ${totalPrice.toFixed(2)}
+                  </h3>
+                </div>
+
+                <button
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 mt-5"
+                >
+                  Start A New Order
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
